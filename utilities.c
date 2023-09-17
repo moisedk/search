@@ -21,9 +21,10 @@ bool is_directory_empty(const char *path)
     DIR *dir;
     struct dirent *entry;
 
-    if ((dir = opendir(path) == NULL))
+    if ((dir = opendir(path)) == NULL)
     {
         perror("opendir");
+        return false;
     }
     while ((entry = readdir(dir)) != NULL)
     {
@@ -84,19 +85,24 @@ Test whether or not a path is empty using is_directory_empty() and is_file_empty
 bool is_path_empty(const char *path)
 {
     // Check if path is pointing to a regular file or a directory. If neither, just pretend it's not empty
+    if (is_dir(path))
+    {
+        return is_directory_empty(path);
+    }
+
+    return is_file_empty(path);
+}
+bool is_dir(const char *path)
+{
     struct stat path_stat;
     if (stat(path, &path_stat) != 0)
     {
         perror("stat");
         return 1;
     }
-    if (S_ISREG(path_stat.st_mode))
+    if (S_ISDIR(path_stat.st_mode))
     {
-        return is_file_empty(path);
-    }
-    else if (S_ISDIR(path_stat.st_mode))
-    {
-        return is_directory_empty(path);
+        return true;
     }
     return false;
 }

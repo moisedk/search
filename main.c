@@ -37,6 +37,16 @@ void usage(const char *program_name, int status)
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        usage("search", 1);
+    }
+    Settings settings = {
+        .access = 0,
+        .gid = -1,
+        .uid = -1,
+    };
+    search(argv[1], &settings);
     return EXIT_SUCCESS;
 }
 

@@ -17,7 +17,38 @@
  */
 int search(const char *root, const Settings *settings)
 {
+    DIR *dir;
+    struct dirent *entry;
+    char path[500];
 
+    dir = opendir(root);
+    if (dir == NULL)
+    {
+        perror("opendir");
+        return EXIT_FAILURE;
+    }
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        {
+            continue;
+        }
+        snprintf(path, sizeof(path), "%s/%s", root, entry->d_name);
+        // printf("%s\n", path);
+        if (!filter(path, settings))
+        {
+            // Print the file if requested
+            if (settings->print)
+            {
+                printf("%s\n", path);
+            }
+            execute(path, settings);
+        }
+        if (is_dir(path))
+        {
+            search(path, settings);
+        }
+    }
     return EXIT_SUCCESS;
 }
 
