@@ -18,7 +18,9 @@
  * @return  Whether or not the path should be excluded from the output (true to
  * exclude, false to include).
  */
-bool        filter(const char *path, const Settings *settings) {
+bool filter(const char *path, const Settings *settings)
+{
+
     return false;
 }
 

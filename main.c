@@ -11,7 +11,8 @@
 
 /* Functions */
 
-void	    usage(const char *program_name, int status) {
+void usage(const char *program_name, int status)
+{
     fprintf(stderr, "Usage: %s PATH [OPTIONS] [EXPRESSION]\n", program_name);
     fprintf(stderr, "\nOptions:\n");
     fprintf(stderr, "    -executable     File is executable or directory is searchable to user\n");
@@ -34,7 +35,8 @@ void	    usage(const char *program_name, int status) {
 
 /* Main Execution */
 
-int	    main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     return EXIT_SUCCESS;
 }
 

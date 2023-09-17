@@ -15,7 +15,9 @@
  * @param   settings    Settings structure
  * @return  Whether or not the search was successful.
  */
-int	    search(const char *root, const Settings *settings) {
+int search(const char *root, const Settings *settings)
+{
+
     return EXIT_SUCCESS;
 }
 

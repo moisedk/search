@@ -17,7 +17,8 @@
  * @param   settings    Settings structure.
  * @return  Whether or not the execution was successful.
  */
-int	    execute(const char *path, const Settings *settings) {
+int execute(const char *path, const Settings *settings)
+{
     return 0;
 }
 
