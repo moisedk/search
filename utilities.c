@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 /**
- * Test whether or not a directory is empty.
+ * @brief Test whether or not a directory is empty.
  * @param   path        Path to directory.
  * @return  Whether or not a directory is empty.
  */
@@ -78,10 +78,11 @@ bool is_file_empty(const char *path)
     }
 }
 /**
-Test whether or not a path is empty using is_directory_empty() and is_file_empty()
-* @param path Path to the file or directory
-* @return true if path is pointing to an empty file or an empty directory, false otherwise;
-*/
+ * @brief Test whether or not a path is empty using is_directory_empty() and is_file_empty()
+ *
+ * @param path Path to the file or directory
+ * @return true if path is pointing to an empty file or an empty directory, false otherwise;
+ */
 bool is_path_empty(const char *path)
 {
     // Check if path is pointing to a regular file or a directory. If neither, just pretend it's not empty
@@ -92,6 +93,14 @@ bool is_path_empty(const char *path)
 
     return is_file_empty(path);
 }
+
+/**
+ * @brief Test if a path is a directory
+ *
+ * @param path character string path
+ * @return true if path points to a directory
+ * @return false otherwise
+ */
 bool is_dir(const char *path)
 {
     struct stat path_stat;
@@ -100,10 +109,6 @@ bool is_dir(const char *path)
         perror("stat");
         return 1;
     }
-    if (S_ISDIR(path_stat.st_mode))
-    {
-        return true;
-    }
-    return false;
+    return S_ISDIR(path_stat.st_mode);
 }
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */

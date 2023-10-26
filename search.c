@@ -37,12 +37,15 @@ int search(const char *root, const Settings *settings)
         // printf("%s\n", path);
         if (!filter(path, settings))
         {
-            // Print the file if requested
-            if (settings->print)
+            // Print the file if requested explicitely, or if no argument is provided for exec();
+            if (settings->print || !settings->exec_argc)
             {
                 printf("%s\n", path);
             }
-            execute(path, settings);
+            if (settings->exec_argc)
+            {
+                execute(path, settings);
+            }
         }
         if (is_dir(path))
         {

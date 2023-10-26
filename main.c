@@ -20,7 +20,6 @@ void usage(const char *program_name, int status)
     fprintf(stderr, "    -writable       File is writable to user\n\n");
     fprintf(stderr, "    -type [f|d]     File is of type f for regular file or d for directory\n\n");
     fprintf(stderr, "    -empty          File or directory is empty\n\n");
-    fprintf(stderr, "    -empty          File or directory is empty\n\n");
     fprintf(stderr, "    -name  pattern  Base of file name matches shell pattern\n");
     fprintf(stderr, "    -path  pattern  Path of file matches shell pattern\n\n");
     fprintf(stderr, "    -perm  mode     File's permission bits are exactly mode (octal)\n");
@@ -45,7 +44,80 @@ int main(int argc, char *argv[])
         .access = 0,
         .gid = -1,
         .uid = -1,
-    };
+        .type = -1 // Set the type to -1 by default, and set it to 0 for file and 1 for directories;
+        };
+    // Parse the argument values
+    for (int i = 1; i < argc; i++)
+    
+    {
+        // Access field specifiert
+        if (streq(argv[i], "-executable"))
+        {
+            settings.access |= X_OK;
+        }
+        else if (streq(argv[i], "-readable"))
+        {
+            settings.access |= R_OK;
+        }
+        else if (streq(argv[i], "-writable"))
+        {
+            settings.access |= W_OK;
+        }
+        // File type specifier
+        if (streq(argv[i], "-type"))
+        {
+            if (++i >= argc)
+            {
+                usage("search", 1);
+            }
+            if (streq(argv[i], "f"))
+            {
+                settings.type = 0; // Set the file type filter to regular file
+            }
+            else if (streq(argv[i], "d"))
+            {
+                settings.type = 1; // Set the file type filter to directory
+            }
+            else
+            {
+                usage("search", 1);
+            }
+            continue;
+        }
+        // Empty file specifier
+        if (streq(argv[i], "-empty"))
+        {
+            settings.empty = true;
+        }
+        // // File name pattern specifier
+        // if (streq(argv[i], "-name"))
+        // {
+        //     if (++i >= argc)
+        //     {
+        //         usage("search", 1);
+        //     }
+        //     settings.name = strdup(argv[i]);
+        //     continue;
+        // }
+        // // File path pattern specifier
+        // if (streq(argv[i], "-path"))
+        // {
+        //     if (++i >= argc)
+        //     {
+        //         usage("search", 1);
+        //     }
+        //     settings.path = strdup(argv[i]);
+        //     continue;
+        // }
+        // if (streq(argv[i], "-perm"))
+        // {
+        //     if (++i >= argc)
+        //     {
+        //         usage("search", 1);
+        //     }
+        //     settings.perm = atoi(argv[i]);
+        // }
+    }
     search(argv[1], &settings);
     return EXIT_SUCCESS;
 }

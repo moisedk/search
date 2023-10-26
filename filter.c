@@ -20,7 +20,13 @@
  */
 bool filter(const char *path, const Settings *settings)
 {
-
+    // Filtering the file type
+    bool type= (is_dir(path) && settings->type == 0) || (!is_dir(path) && settings->type == 1); // path points to dir but file was searched for, or vice versa
+    bool empty = ((!is_dir(path) && is_file_empty(path)) || (is_dir(path) && is_path_empty(path))) && settings->empty == true;
+    if (type || !empty)
+    {
+        return true;
+    }
     return false;
 }
 
