@@ -111,4 +111,7 @@ bool is_dir(const char *path)
     }
     return S_ISDIR(path_stat.st_mode);
 }
+bool is_empty(const char *path) {
+    return (!is_dir(path) && is_file_empty(path)) || (is_dir(path) && is_path_empty(path));
+}
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */

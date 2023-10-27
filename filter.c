@@ -10,6 +10,8 @@
 #include <fnmatch.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <libgen.h>
+#include <fnmatch.h>
 
 /**
  * Test whether or not the given path should be filtered out of the output.
@@ -20,14 +22,16 @@
  */
 bool filter(const char *path, const Settings *settings)
 {
-    // Filtering the file type
-    bool type= (is_dir(path) && settings->type == 0) || (!is_dir(path) && settings->type == 1); // path points to dir but file was searched for, or vice versa
-    bool empty = ((!is_dir(path) && is_file_empty(path)) || (is_dir(path) && is_path_empty(path))) && settings->empty == true;
-    if (type || !empty)
-    {
-        return true;
-    }
-    return false;
+    char *base_name = basename(path);
+    // if (fnmatch(settings->name, base_name, FNM_NOESCAPE) == 0) {
+    //     printf("Fuck");
+    // }
+    bool _type= (is_dir(path) && settings->type == 0) || (!is_dir(path) && settings->type == 1); // path points to dir but file was searched for, or vice versa
+    bool _empty = !(is_empty(path) && settings->empty);
+    bool _name = settings->name && fnmatch(settings->name, base_name, FNM_NOESCAPE) != 0;
+    // bool _path = settings->path && fnmatch(settings->path, path, FNM_NOESCAPE) != 0;
+    
+    return _type || _empty || _name;
 }
 
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */

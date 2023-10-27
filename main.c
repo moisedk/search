@@ -40,16 +40,21 @@ int main(int argc, char *argv[])
     {
         usage("search", 1);
     }
+    // Most filtering setting is set to 0 or NULL by default to mean unacccounted for; 
     Settings settings = {
         .access = 0,
+        .empty = -1,
+        .path = NULL,
+        .name = NULL,
         .gid = -1,
         .uid = -1,
-        .type = -1 // Set the type to -1 by default, and set it to 0 for file and 1 for directories;
+        .type = -1
         };
     // Parse the argument values
     for (int i = 1; i < argc; i++)
     
     {
+        printf("%s\n", argv[i]);
         // Access field specifiert
         if (streq(argv[i], "-executable"))
         {
@@ -87,18 +92,18 @@ int main(int argc, char *argv[])
         // Empty file specifier
         if (streq(argv[i], "-empty"))
         {
-            settings.empty = true;
+            settings.empty = 1;
         }
-        // // File name pattern specifier
-        // if (streq(argv[i], "-name"))
-        // {
-        //     if (++i >= argc)
-        //     {
-        //         usage("search", 1);
-        //     }
-        //     settings.name = strdup(argv[i]);
-        //     continue;
-        // }
+        // File name pattern specifier
+        if (streq(argv[i], "-name"))
+        {
+            if (++i >= argc)
+            {
+                usage("search", 1);
+            }
+            settings.name = strdup(argv[i]);
+            continue;
+        }
         // // File path pattern specifier
         // if (streq(argv[i], "-path"))
         // {
