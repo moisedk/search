@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     // Most filtering setting is set to 0 or NULL by default to mean unacccounted for; 
     Settings settings = {
         .access = 0,
-        .empty = -1,
+        .empty = false,
         .path = NULL,
         .name = NULL,
         .gid = -1,
@@ -104,16 +104,16 @@ int main(int argc, char *argv[])
             settings.name = strdup(argv[i]);
             continue;
         }
-        // // File path pattern specifier
-        // if (streq(argv[i], "-path"))
-        // {
-        //     if (++i >= argc)
-        //     {
-        //         usage("search", 1);
-        //     }
-        //     settings.path = strdup(argv[i]);
-        //     continue;
-        // }
+        // File path pattern specifier
+        if (streq(argv[i], "-path"))
+        {
+            if (++i >= argc)
+            {
+                usage("search", 1);
+            }
+            settings.path = strdup(argv[i]);
+            continue;
+        }
         // if (streq(argv[i], "-perm"))
         // {
         //     if (++i >= argc)

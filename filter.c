@@ -23,15 +23,15 @@
 bool filter(const char *path, const Settings *settings)
 {
     char *base_name = basename(path);
-    // if (fnmatch(settings->name, base_name, FNM_NOESCAPE) == 0) {
+    // if (fnmatch(settings->path, path, FNM_NOESCAPE) == 0) {
     //     printf("Fuck");
     // }
     bool _type= (is_dir(path) && settings->type == 0) || (!is_dir(path) && settings->type == 1); // path points to dir but file was searched for, or vice versa
-    bool _empty = !(is_empty(path) && settings->empty);
+    bool _empty = !is_empty(path) && settings->empty;
     bool _name = settings->name && fnmatch(settings->name, base_name, FNM_NOESCAPE) != 0;
-    // bool _path = settings->path && fnmatch(settings->path, path, FNM_NOESCAPE) != 0;
+    bool _path = settings->path && fnmatch(settings->path, path, FNM_NOESCAPE) != 0;
     
-    return _type || _empty || _name;
+    return _type || _empty || _name || _path;
 }
 
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */
