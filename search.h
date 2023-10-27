@@ -44,6 +44,7 @@ bool is_file_empty(const char *path);
 bool is_path_empty(const char *path);
 time_t get_mtime(const char *path);
 bool is_dir(const char *path);
+bool is_empty(const char *path);
 
 #endif
 
