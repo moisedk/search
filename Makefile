@@ -17,7 +17,7 @@ TARGET= search
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJS) -lm
 
 # Compile source files to object files
 %.o: %.c
@@ -32,5 +32,3 @@ clean:
 	@rm -f $(TARGET) $(OBJS) *.log *.input
 
 .PHONY: all test clean
-
-# TODO: Add rules for search and object files
