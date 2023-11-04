@@ -48,13 +48,14 @@ int main(int argc, char *argv[])
         .name = NULL,
         .gid = -1,
         .uid = -1,
-        .type = -1
+        .type = -1,
+        .perm = NULL
         };
     // Parse the argument values
     for (int i = 1; i < argc; i++)
     
     {
-        printf("%s\n", argv[i]);
+        // printf("%s\n", argv[i]);
         // Access field specifiert
         if (streq(argv[i], "-executable"))
         {
@@ -114,14 +115,22 @@ int main(int argc, char *argv[])
             settings.path = strdup(argv[i]);
             continue;
         }
-        // if (streq(argv[i], "-perm"))
-        // {
-        //     if (++i >= argc)
-        //     {
-        //         usage("search", 1);
-        //     }
-        //     settings.perm = atoi(argv[i]);
-        // }
+        // File permission mode specification
+        if (streq(argv[i], "-perm"))
+        {
+            if (++i >= argc)
+            {
+                usage("search", 1);
+            }
+            char *perm = strdup(argv[i]);
+            if (is_numeric(perm)) { 
+                settings.perm = perm;
+            }
+            else {
+                fprintf(stderr, "Invalid permission value: aborting...");
+                return EXIT_FAILURE;
+            }
+        }
     }
     search(argv[1], &settings);
     return EXIT_SUCCESS;

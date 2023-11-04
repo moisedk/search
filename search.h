@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/stat.h>
 
 /* Macros */
 
@@ -22,7 +23,7 @@ typedef struct
     bool empty;   /* Empty files and directories (-empty) */
     char *name;   /* Base of file name matches shell pattern (-name) */
     char *path;   /* Path of file matches shell pattern (-path) */
-    int perm;     /* File's permission bits are exactly octal mode (-perm) */
+    char *perm;     /* File's permission bits are exactly octal mode (-perm) */
     time_t newer; /* File was modified more recently than file (-newer) */
     int uid;      /* File's numeric user ID is n */
     int gid;      /* File's numeric group ID is n */
@@ -45,6 +46,9 @@ bool is_path_empty(const char *path);
 time_t get_mtime(const char *path);
 bool is_dir(const char *path);
 bool is_empty(const char *path);
+mode_t get_perm_mode(const char *file);
+bool is_numeric(char *str);
+int to_decimal(char *oct);
 
 #endif
 

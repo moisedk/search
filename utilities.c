@@ -9,7 +9,8 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
+#include <ctype.h>
+#include <math.h>
 /**
  * @brief Test whether or not a directory is empty.
  * @param   path        Path to directory.
@@ -51,6 +52,17 @@ time_t get_mtime(const char *path)
     return modified_time;
 }
 /**
+ * @brief Get the permission bits of file
+ * 
+ * @param file char string for the filename
+ * @return mode_t st_mode, whose 9 LSB are the permission bit.
+ */
+mode_t get_perm_mode(const char *file) {
+    struct stat statbuff;
+    lstat(file, &statbuff);
+    return statbuff.st_mode;
+}
+/**
  * @brief Test if path is pointing to an empty file. Assumes path points to a file, not a directory
  *
  * @param path path to the file
@@ -63,7 +75,7 @@ bool is_file_empty(const char *path)
     if (file == NULL)
     {
         perror("fopen");
-        return -1;
+        return 1;
     }
     fseek(file, 0, SEEK_END);     // Set the file position pointer to the end of the file then calculate the size of the file;
     long file_size = ftell(file); // Get the size of the file
@@ -113,5 +125,30 @@ bool is_dir(const char *path)
 }
 bool is_empty(const char *path) {
     return (!is_dir(path) && is_file_empty(path)) || (is_dir(path) && is_path_empty(path));
+}
+/**
+ * @brief Return true if the string is a valid numberical string; false otherwise
+ * 
+ * @param str string expression to parse
+ * @return true if str is numberical
+ * @return false ottherwise
+ */
+bool is_numeric(char *str) {
+    int i;
+    for (i = 0; str[i] != '\0'; i++) {
+        if (!isdigit(str[i])) {
+            return false;
+        }
+    }
+    return i < 4; // The fourth character (i == 3) must be the null character;
+}
+
+int to_decimal(char  *oct) {
+    int len = strlen(oct), base = 8, dec = 0;
+    for (int i = 0; i < len; i++) {
+        int digit = oct[i] - '0';
+        dec += digit * pow(base, len - i - 1);
+    }
+    return dec;
 }
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */
