@@ -151,4 +151,7 @@ int to_decimal(char  *oct) {
     }
     return dec;
 }
+int get_access(const char *path, int flags) {
+    return access(path, flags);
+}
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */
