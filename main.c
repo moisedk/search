@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
             }
             else {
                 fprintf(stderr, "Invalid permission value: aborting...");
-                return EXIT_FAILURE;
+                exit(EXIT_FAILURE);
             }
         }
         if (streq(argv[i], "-newer")) {
@@ -142,6 +142,32 @@ int main(int argc, char *argv[])
             }
             char *oldfile = strdup(argv[i]);
             settings.newer = get_mtime(oldfile);
+        }
+        if (streq(argv[i], "-uid")) {
+            if (++i > argc) {
+                usage("search", 1);
+            }
+            char *userid = strdup(argv[i]);
+            if (is_numeric(userid)) {
+                settings.uid = atoi(userid);
+            }
+            else {
+                fprintf(stderr, "Invalid user id: aobrting...");
+                exit(EXIT_FAILURE);
+            }
+        }
+         if (streq(argv[i], "-gid")) {
+            if (++i > argc) {
+                usage("search", 1);
+            }
+            char *groupid = strdup(argv[i]);
+            if (is_numeric(groupid)) {
+                settings.gid = atoi(groupid);
+            }
+            else {
+                fprintf(stderr, "Invalid group id: aobrting...");
+                exit(EXIT_FAILURE);
+            }
         }
     }
     search(argv[1], &settings);

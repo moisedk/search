@@ -43,8 +43,9 @@ bool filter(const char *path, const Settings *settings)
 
     // }
     bool _mtime = settings->newer && (settings->newer > get_mtime(path));
-    
-    return _type || _empty || _name || _path || _perm | _access || _mtime;
+    bool _uid = (settings->uid != -1) && (getuid() != settings->uid);
+    bool _gid = (settings->uid != -1) && (getgid() != settings->gid);
+    return _type || _empty || _name || _path || _perm | _access || _mtime || _uid || _gid;
 }
 
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */
