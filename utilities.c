@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <math.h>
+#include <sys/types.h>
 /**
  * @brief Test whether or not a directory is empty.
  * @param   path        Path to directory.
@@ -48,7 +49,7 @@ time_t get_mtime(const char *path)
 {
     struct stat statbuff;
     lstat(path, &statbuff);
-    time_t modified_time = statbuff.st_mtim.tv_sec;
+    time_t modified_time = statbuff.st_mtime;
     return modified_time;
 }
 /**
