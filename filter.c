@@ -23,9 +23,9 @@
 bool filter(const char *path, const Settings *settings)
 {
     char *base_name = basename(path);
-    // if (fnmatch(base_name, "empty.txt",FNM_NOESCAPE) == 0) {
+    // if (fnmatch(base_name, "new.txt",FNM_NOESCAPE) == 0) {
     //     printf("Fuck");
-    }
+    // }
     bool _type= (is_dir(path) && settings->type == 0) || (!is_dir(path) && settings->type == 1); // path points to dir but file was searched for, or vice versa
     bool _empty = !is_empty(path) && settings->empty;
     bool _name = settings->name && fnmatch(settings->name, base_name, FNM_NOESCAPE) != 0;
@@ -34,8 +34,17 @@ bool filter(const char *path, const Settings *settings)
     // printf("Setting->permission: %s\n", settings->perm);
     bool _perm = settings->perm && ((to_decimal(settings->perm) & 0777) != (get_perm_mode(path) & 0777));
     bool _access = settings->access && get_access(path, settings->access);
+    // time_t parameter_time = settings->newer, file_time = get_mtime(path);
+    // if (parameter_time > file_time) {
+    //     printf("This file %s (%ld) is older than the one provided: (%ld)\n", path, file_time, parameter_time); 
+    //     }
+    // else {
+    //     printf("This file %s (%ld) is younger than the one provided: (%ld)\n", path, file_time, parameter_time); 
+
+    // }
+    bool _mtime = settings->newer && (settings->newer > get_mtime(path));
     
-    return _type || _empty || _name || _path || _perm | _access;
+    return _type || _empty || _name || _path || _perm | _access || _mtime;
 }
 
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */
