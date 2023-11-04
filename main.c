@@ -49,13 +49,18 @@ int main(int argc, char *argv[])
         .gid = -1,
         .uid = -1,
         .type = -1,
-        .perm = NULL
+        .perm = NULL,
+        .newer = -1,
+        .uid = -1,
+        .gid = -1,
+        .exec_argc = 0,
+        .exec_argv = NULL,
         };
     // Parse the argument values
     for (int i = 1; i < argc; i++)
     
     {
-        // printf("%s\n", argv[i]);
+        printf("%s\n", argv[i]);
         // Access field specifiert
         if (streq(argv[i], "-executable"))
         {
