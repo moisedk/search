@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 /* Macros */
 
@@ -49,6 +50,7 @@ bool is_empty(const char *path);
 mode_t get_perm_mode(const char *file);
 bool is_numeric(char *str);
 int to_decimal(char *oct);
+int get_access(const char *path, int flags);
 
 #endif
 
