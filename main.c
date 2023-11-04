@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         .uid = -1,
         .type = -1,
         .perm = NULL,
-        .newer = -1,
+        .newer = 0,
         .uid = -1,
         .gid = -1,
         .exec_argc = 0,
@@ -135,6 +135,13 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "Invalid permission value: aborting...");
                 return EXIT_FAILURE;
             }
+        }
+        if (streq(argv[i], "-newer")) {
+            if (++i > argc) {
+                usage("search", 1);
+            }
+            char *oldfile = strdup(argv[i]);
+            settings.newer = get_mtime(oldfile);
         }
     }
     search(argv[1], &settings);
