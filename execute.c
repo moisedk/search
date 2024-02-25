@@ -19,6 +19,31 @@
  */
 int execute(const char *path, const Settings *settings)
 {
+    int rc = fork();
+    if (rc < 0) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+    else if (rc == 0) {
+        char *exec_cmd = strdup(settings->exec_argv[0]);
+        char *exec_args[50]; // Array of pointers to null-terminated strings for execvp()
+        int i;
+        for (i = 0; i < settings->exec_argc; ++i) {
+            exec_args[i] = strdup(settings->exec_argv[i]);
+        }
+        exec_args[i++] = strdup(path);
+        exec_args[i] = NULL;
+        execvp(exec_cmd, exec_args);
+        perror("exevp");
+        exit(EXIT_FAILURE);
+    }
+    else {
+        int status;
+        wait(&status);
+        if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+            printf("Done\n");
+        }
+    }
     return 0;
 }
 

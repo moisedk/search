@@ -169,7 +169,39 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
         }
+        if (streq(argv[i], "-print")) {
+            settings.print = true;
+            continue;
+        }
+        if (streq(argv[i], "-exec")) {
+            ++i;
+            int argnum = 0; // Get the number of arguments specifically passed to this program, as in "stat /home"
+            while (i + argnum < argc && !streq(argv[i + argnum], "{}")) {
+                ++argnum;
+            }
+            if (argnum == 0) {
+                printf("Missing argument for exec: aborting...");
+                exit(EXIT_FAILURE);
+            }
+                // Dynamically allocate memory for execargs
+            char **execargs = malloc((argnum + 1) * sizeof(char*));
+            if (execargs == NULL) {
+                perror("Failed to allocate memory for execargs");
+                exit(EXIT_FAILURE);
+            }
+            int p = 0; // To iterate from 1 to the end of the argument list ({})
+            while (i < argc && !streq(argv[i], "{}")) {
+                execargs[p] = argv[i];
+                ++i;
+                ++p;
+            }
+            execargs[argnum] = NULL;
+            settings.exec_argc = argnum;
+            settings.exec_argv = execargs;
+
+        }
     }
+    for (int i = 0; i < settings.exec_argc; i++) printf("search: settings.exec_argv: \n", settings.exec_argv[i]);
     search(argv[1], &settings);
     return EXIT_SUCCESS;
 }
