@@ -37,14 +37,9 @@ int execute(const char *path, const Settings *settings)
         perror("exevp");
         exit(EXIT_FAILURE);
     }
-    else {
-        int status;
-        wait(&status);
-        if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-            printf("Done\n");
-        }
-    }
-    return 0;
+    int status;
+    wait(&status);
+    return status;
 }
 
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */

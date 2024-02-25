@@ -24,7 +24,7 @@ int search(const char *root, const Settings *settings)
     dir = opendir(root);
     if (dir == NULL)
     {
-        perror("opendir");
+        perror(" seach opendir");
         return EXIT_FAILURE;
     }
     while ((entry = readdir(dir)) != NULL)

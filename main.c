@@ -60,7 +60,6 @@ int main(int argc, char *argv[])
     for (int i = 1; i < argc; i++)
     
     {
-        printf("%s\n", argv[i]);
         // Access field specifiert
         if (streq(argv[i], "-executable"))
         {
@@ -201,7 +200,7 @@ int main(int argc, char *argv[])
 
         }
     }
-    for (int i = 0; i < settings.exec_argc; i++) printf("search: settings.exec_argv: \n", settings.exec_argv[i]);
+    
     search(argv[1], &settings);
     return EXIT_SUCCESS;
 }
