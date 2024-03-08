@@ -51,12 +51,12 @@ int main(int argc, char *argv[])
         .type = -1,
         .perm = NULL,
         .newer = 0,
-        .uid = -1,
         .gid = -1,
         .exec_argc = 0,
         .exec_argv = NULL,
         };
     // Parse the argument values
+    char ** execargs;
     for (int i = 1; i < argc; i++)
     
     {
@@ -106,7 +106,12 @@ int main(int argc, char *argv[])
             {
                 usage("search", 1);
             }
-            settings.name = strdup(argv[i]);
+            char *name = strdup(argv[i]);
+            if (name == NULL) {
+                perror("strdup");
+                return FAILURE;
+            }
+            settings.name = name;
             continue;
         }
         // File path pattern specifier
@@ -116,7 +121,12 @@ int main(int argc, char *argv[])
             {
                 usage("search", 1);
             }
-            settings.path = strdup(argv[i]);
+            char* path = strdup(argv[i]);
+            if (path == NULL) {
+                perror("strdup");
+                return FAILURE;
+            }
+            settings.path = path;
             continue;
         }
         // File permission mode specification
@@ -127,45 +137,61 @@ int main(int argc, char *argv[])
                 usage("search", 1);
             }
             char *perm = strdup(argv[i]);
+            if (perm == NULL) {
+                perror("strdup");
+                return FAILURE;
+            }
             if (is_numeric(perm)) { 
                 settings.perm = perm;
             }
             else {
                 fprintf(stderr, "Invalid permission value: aborting...");
-                exit(EXIT_FAILURE);
+                return ARG_ERR;
             }
         }
         if (streq(argv[i], "-newer")) {
-            if (++i > argc) {
+            if (++i >= argc) {
                 usage("search", 1);
             }
             char *oldfile = strdup(argv[i]);
+            if (oldfile == NULL) {
+                perror("strdup");
+                return FAILURE;
+            }
             settings.newer = get_mtime(oldfile);
         }
         if (streq(argv[i], "-uid")) {
-            if (++i > argc) {
+            if (++i >= argc) {
                 usage("search", 1);
             }
             char *userid = strdup(argv[i]);
+            if (userid == NULL) {
+                perror("strdup");
+                return FAILURE;
+            }
             if (is_numeric(userid)) {
                 settings.uid = atoi(userid);
             }
             else {
-                fprintf(stderr, "Invalid user id: aobrting...");
-                exit(EXIT_FAILURE);
+                fprintf(stderr, "Invalid user id: aborting...");
+                return ARG_ERR;
             }
         }
          if (streq(argv[i], "-gid")) {
-            if (++i > argc) {
+            if (++i >= argc) {
                 usage("search", 1);
             }
             char *groupid = strdup(argv[i]);
+            if (groupid == NULL) {
+                perror("strdup");
+                return FAILURE;
+            }
             if (is_numeric(groupid)) {
                 settings.gid = atoi(groupid);
             }
             else {
-                fprintf(stderr, "Invalid group id: aobrting...");
-                exit(EXIT_FAILURE);
+                fprintf(stderr, "Invalid group id: aborting...");
+                return ARG_ERR;
             }
         }
         if (streq(argv[i], "-print")) {
@@ -180,13 +206,13 @@ int main(int argc, char *argv[])
             }
             if (argnum == 0) {
                 printf("Missing argument for exec: aborting...");
-                exit(EXIT_FAILURE);
+                return ARG_ERR;
             }
                 // Dynamically allocate memory for execargs
-            char **execargs = malloc((argnum + 1) * sizeof(char*));
+            execargs = (char** )malloc((argnum + 1) * sizeof(char*));
             if (execargs == NULL) {
                 perror("Failed to allocate memory for execargs");
-                exit(EXIT_FAILURE);
+                return ARG_ERR;
             }
             int p = 0; // To iterate from 1 to the end of the argument list ({})
             while (i < argc && !streq(argv[i], "{}")) {
@@ -197,12 +223,13 @@ int main(int argc, char *argv[])
             execargs[argnum] = NULL;
             settings.exec_argc = argnum;
             settings.exec_argv = execargs;
-
+            continue;
         }
     }
-    
+
     search(argv[1], &settings);
-    return EXIT_SUCCESS;
+    free(execargs);
+    return SUCCESS;
 }
 
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */

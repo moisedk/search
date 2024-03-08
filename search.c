@@ -17,6 +17,22 @@
  */
 int search(const char *root, const Settings *settings)
 {
+    if (!filter(root, settings))
+    {
+        // Print the file if requested explicitely, or if no argument is provided for exec();
+        if (settings->print || !settings->exec_argv)
+        {
+            printf("%s\n", root);
+        }
+        if (settings->exec_argv)
+        {
+            execute(root, settings);
+        }
+    }
+    if (!is_dir(root))
+    {
+        return EXIT_SUCCESS;
+    }
     DIR *dir;
     struct dirent *entry;
     char path[500];
@@ -24,7 +40,7 @@ int search(const char *root, const Settings *settings)
     dir = opendir(root);
     if (dir == NULL)
     {
-        perror(" seach opendir");
+        perror("opendir");
         return EXIT_FAILURE;
     }
     while ((entry = readdir(dir)) != NULL)
@@ -34,23 +50,7 @@ int search(const char *root, const Settings *settings)
             continue;
         }
         snprintf(path, sizeof(path), "%s/%s", root, entry->d_name);
-        // printf("%s\n", path);
-        if (!filter(path, settings))
-        {
-            // Print the file if requested explicitely, or if no argument is provided for exec();
-            if (settings->print || !settings->exec_argv)
-            {
-                printf("%s\n", path);
-            }
-            if (settings->exec_argv)
-            {
-                execute(path, settings);
-            }
-        }
-        if (is_dir(path))
-        {
-            search(path, settings);
-        }
+        search(path, settings);
     }
     return EXIT_SUCCESS;
 }
