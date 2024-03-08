@@ -22,7 +22,12 @@
  */
 bool filter(const char *path, const Settings *settings)
 {
-    char *base_name = basename(path);
+    char* base_path = strdup(path);
+    if (base_path == NULL) {
+        perror("strdup");
+        return FAILURE;
+    }
+    char *base_name = basename(base_path);
 
     bool 
         _type = (is_dir(path) && settings->type == 0) || (!is_dir(path) && settings->type == 1), // path points to dir but file was searched for, or vice versa
@@ -34,7 +39,7 @@ bool filter(const char *path, const Settings *settings)
         _mtime = settings->newer && (settings->newer > get_mtime(path)),
         _uid = (settings->uid != -1) && (getuid() != settings->uid),
         _gid = (settings->uid != -1) && (getgid() != settings->gid);
-        
+
     return _type || _empty || _name || _path || _perm | _access || _mtime || _uid || _gid;
 }
 
