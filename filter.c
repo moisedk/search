@@ -22,11 +22,10 @@
  */
 bool filter(const char *path, const Settings *settings)
 {
-    char* base_path = strdup(path);
-    if (base_path == NULL) {
-        perror("strdup");
-        return FAILURE;
-    }
+    char base_path[PATH_MAX]; // PATH_MAX is defined in limits.h and represents the maximum path length
+    strncpy(base_path, path, PATH_MAX);
+    base_path[PATH_MAX - 1] = '\0'; // Ensure null termination
+
     char *base_name = basename(base_path);
 
     bool 
