@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <limits.h>
 #include <dirent.h>
 
 /**
@@ -31,17 +31,17 @@ int search(const char *root, const Settings *settings)
     }
     if (!is_dir(root))
     {
-        return EXIT_SUCCESS;
+        return 0;
     }
     DIR *dir;
     struct dirent *entry;
-    char path[500];
+    char path[PATH_MAX];
 
     dir = opendir(root);
     if (dir == NULL)
     {
         perror("opendir");
-        return EXIT_FAILURE;
+        return OPEN_DIR_ERR;
     }
     while ((entry = readdir(dir)) != NULL)
     {
@@ -52,7 +52,8 @@ int search(const char *root, const Settings *settings)
         snprintf(path, sizeof(path), "%s/%s", root, entry->d_name);
         search(path, settings);
     }
-    return EXIT_SUCCESS;
+    closedir(dir);
+    return SUCCESS;
 }
 
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */
