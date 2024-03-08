@@ -48,7 +48,10 @@ bool is_directory_empty(const char *path)
 time_t get_mtime(const char *path)
 {
     struct stat statbuff;
-    lstat(path, &statbuff);
+    if (lstat(path, &statbuff) == -1) {
+        fprintf(stderr, "Error getting file attributes");
+        return FAILURE;
+    }
     time_t modified_time = statbuff.st_mtime;
     return modified_time;
 }
@@ -60,7 +63,10 @@ time_t get_mtime(const char *path)
  */
 mode_t get_perm_mode(const char *file) {
     struct stat statbuff;
-    lstat(file, &statbuff);
+    if (lstat(file, &statbuff) == -1) {
+        fprintf(stderr, "Error getting file attributes");
+        return FAILURE;
+    }
     return statbuff.st_mode;
 }
 /**
@@ -76,19 +82,13 @@ bool is_file_empty(const char *path)
     if (file == NULL)
     {
         perror("fopen");
-        return 1;
+        return false;
     }
     fseek(file, 0, SEEK_END);     // Set the file position pointer to the end of the file then calculate the size of the file;
     long file_size = ftell(file); // Get the size of the file
     fclose(file);
-    if (file_size == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return file_size == 0;
+    
 }
 /**
  * @brief Test whether or not a path is empty using is_directory_empty() and is_file_empty()
@@ -99,12 +99,7 @@ bool is_file_empty(const char *path)
 bool is_path_empty(const char *path)
 {
     // Check if path is pointing to a regular file or a directory. If neither, just pretend it's not empty
-    if (is_dir(path))
-    {
-        return is_directory_empty(path);
-    }
-
-    return is_file_empty(path);
+    return (is_dir(path) && is_directory_empty(path)) || is_file_empty(path);
 }
 
 /**
@@ -120,13 +115,11 @@ bool is_dir(const char *path)
     if (stat(path, &path_stat) != 0)
     {
         perror("stat");
-        return 1;
+        return false;
     }
     return S_ISDIR(path_stat.st_mode);
 }
-bool is_empty(const char *path) {
-    return (!is_dir(path) && is_file_empty(path)) || (is_dir(path) && is_path_empty(path));
-}
+
 /**
  * @brief Return true if the string is a valid numberical string; false otherwise
  * 
@@ -145,14 +138,13 @@ bool is_numeric(char *str) {
 }
 
 int to_decimal(char  *oct) {
-    int len = strlen(oct), base = 8, dec = 0;
-    for (int i = 0; i < len; i++) {
+    size_t len = strlen(oct); 
+    int dec = 0;
+    for (size_t i = 0; i < len; i++) {
         int digit = oct[i] - '0';
-        dec += digit * pow(base, len - i - 1);
+        dec += digit << 3*(len - i - 1);
     }
     return dec;
 }
-int get_access(const char *path, int flags) {
-    return access(path, flags);
-}
+
 /* vim: set sts=4 sw=4 ts=8 expandtab ft=c: */
