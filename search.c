@@ -38,11 +38,11 @@ int search(const char *root, const Settings *settings)
         if (!filter(path, settings))
         {
             // Print the file if requested explicitely, or if no argument is provided for exec();
-            if (settings->print || !settings->exec_argc)
+            if (settings->print || !settings->exec_argv)
             {
                 printf("%s\n", path);
             }
-            if (settings->exec_argc)
+            if (settings->exec_argv)
             {
                 execute(path, settings);
             }
