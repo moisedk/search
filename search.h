@@ -3,6 +3,12 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
+#define SUCCESS 0
+#define FAILURE 1
+#define ARG_ERR -1
+#define OPEN_DIR_ERR -2
+#define READ_DIR_ERR -3
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <time.h>
@@ -46,7 +52,6 @@ bool is_file_empty(const char *path);
 bool is_path_empty(const char *path);
 time_t get_mtime(const char *path);
 bool is_dir(const char *path);
-bool is_empty(const char *path);
 mode_t get_perm_mode(const char *file);
 bool is_numeric(char *str);
 int to_decimal(char *oct);
